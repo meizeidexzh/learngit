@@ -9,7 +9,7 @@ struct HeapNode{
 typedef struct HeapNode *MinHeap;
 
 MinHeap CreateHeap(int n){
-	MinHeap H = (MinHeap)amlloc(sizeof(struct HeapNode));
+	MinHeap H = (MinHeap)malloc(sizeof(struct HeapNode));
 	H->size = 0; H->capacity = n;
 	H->vals = (int*)malloc(sizeof(int)*n);
 	return H;
@@ -28,8 +28,12 @@ void Insert(MinHeap H, int item){
 	H->vals[child] = item;
 }
 
+#define Error -100000
 int Delete(MinHeap H){
 	int parent, child; int Min, temp;
+	if(H->size == 0){
+		cout << "heap is empty" << endl; return Error;
+	}
 	temp = H->vals[H->size-1]; Min = H->vals[0]; H->size --;
 	for(parent=0; 2*parent+1<H->size; parent=child){
 		child = 2*parent + 1;
@@ -42,10 +46,26 @@ int Delete(MinHeap H){
 	return Min;
 }
 
+MinHeap CreateHeap(int *arr, int n, int maxsize){
+	MinHeap H = (MinHeap)malloc(sizeof(struct HeapNode));
+	H->size = 0; H->capacity = maxsize;
+	H->vals =(int*)malloc(sizeof(int)*maxsize);
+	int i;
+	for(i=0; i<n; i++) Insert(H, arr[i]);
+	return H;
+} 
 
-
+void PrintHeap(MinHeap H){
+	int i;
+	for(i=0; i<H->size; i++) cout << H->vals[i] << " "; cout << endl;
+}
 
 int main(){
-	
+	int arr[] = {9,8,7,6,5,4,3,2,1,0}, n=10;
+	MinHeap H = CreateHeap(arr, n, 50);
+	PrintHeap(H);
+	for(int i=0; i<11; i++){
+		Delete(H); PrintHeap(H);
+	}
 	return 0;
 }
